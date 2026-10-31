@@ -24,7 +24,8 @@ body{
   max-width:960px; width:100%; margin:0 auto; padding:1.5rem 1.25rem .5rem;
 }
 .brand{display:flex; align-items:center; gap:.9rem}
-.brand-mark{font-size:2.4rem}
+.brand-mark{display:inline-flex;line-height:0}
+.brand-sun{width:3.4rem;height:3.4rem;border-radius:50%;object-fit:cover;box-shadow:0 2px 10px rgba(47,127,196,.35)}
 .brand h1{margin:0; font-size:1.9rem; letter-spacing:.5px; color:var(--cerulean)}
 .tagline{margin:.1rem 0 0; font-style:italic; opacity:.75}
 .unit-toggle{display:flex; border:2px solid var(--cerulean); border-radius:999px; overflow:hidden}
