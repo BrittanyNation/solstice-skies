@@ -1,0 +1,84 @@
+/* ============================================================
+   SOLSTICE SKIES — styles
+   Palette (sky-inspired, fresh for this project):
+     Cerulean   #2F7FC4   primary sky blue
+     Sun Coral  #FF7A59   warm accent (sun / CTAs)
+     Apricot    #FFB25E   soft highlight
+     Mist       #DCEBF5   pale panel blue
+     Cloud      #F8FBFD   page background
+     Slate Ink  #26313B   text
+   ============================================================ */
+:root{
+  --cerulean:#2F7FC4; --coral:#FF7A59; --apricot:#FFB25E;
+  --mist:#DCEBF5; --cloud:#F8FBFD; --ink:#26313B;
+  --radius:16px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; font-family:"Segoe UI",system-ui,-apple-system,sans-serif;
+  color:var(--ink); background:linear-gradient(180deg,var(--mist) 0,var(--cloud) 320px);
+  min-height:100vh; display:flex; flex-direction:column;
+}
+.site-header{
+  display:flex; justify-content:space-between; align-items:center; gap:1rem;
+  max-width:960px; width:100%; margin:0 auto; padding:1.5rem 1.25rem .5rem;
+}
+.brand{display:flex; align-items:center; gap:.9rem}
+.brand-mark{font-size:2.4rem}
+.brand h1{margin:0; font-size:1.9rem; letter-spacing:.5px; color:var(--cerulean)}
+.tagline{margin:.1rem 0 0; font-style:italic; opacity:.75}
+.unit-toggle{display:flex; border:2px solid var(--cerulean); border-radius:999px; overflow:hidden}
+.unit-btn{border:0; background:transparent; padding:.45rem 1rem; font-size:1rem; cursor:pointer; color:var(--cerulean); font-weight:600}
+.unit-btn.active{background:var(--cerulean); color:#fff}
+main{max-width:960px; width:100%; margin:0 auto; padding:1rem 1.25rem 2rem; flex:1}
+.search-panel{background:#fff; border-radius:var(--radius); padding:1.25rem; box-shadow:0 6px 24px rgba(38,49,59,.08)}
+.search-panel label{font-weight:600; display:block; margin-bottom:.6rem}
+.search-row{display:flex; gap:.6rem; flex-wrap:wrap}
+.search-row input{
+  flex:1; min-width:220px; padding:.7rem .9rem; font-size:1rem;
+  border:2px solid var(--mist); border-radius:10px;
+}
+.search-row input:focus{outline:none; border-color:var(--cerulean)}
+.search-btn{
+  background:var(--coral); color:#fff; border:0; border-radius:10px;
+  padding:.7rem 1.3rem; font-size:1rem; font-weight:700; cursor:pointer;
+}
+.search-btn:hover{background:#f9633f}
+.status{min-height:1.4em; margin:.8rem 0 0; font-weight:600}
+.status.loading{color:var(--cerulean)}
+.status.error{color:#C0392B}
+.favorites-panel{margin-top:1.5rem}
+.favorites-panel h2,.forecast-title{color:var(--cerulean); font-size:1.25rem}
+.favorites-list{display:flex; gap:.6rem; flex-wrap:wrap}
+.fav-chip{
+  display:flex; align-items:center; gap:.5rem; background:#fff; border:2px solid var(--mist);
+  border-radius:999px; padding:.45rem .9rem; cursor:pointer; font-size:.95rem; font-weight:600;
+}
+.fav-chip:hover{border-color:var(--apricot)}
+.fav-chip .fav-temp{color:var(--coral); font-weight:800}
+.fav-chip .fav-remove{border:0; background:transparent; cursor:pointer; font-size:1rem; color:#C0392B; padding:0}
+.weather-panel{margin-top:1.5rem}
+.current-card{
+  background:linear-gradient(135deg,var(--cerulean),#57A7DC); color:#fff;
+  border-radius:var(--radius); padding:1.5rem; display:flex; flex-wrap:wrap; gap:1.5rem;
+  box-shadow:0 10px 30px rgba(47,127,196,.35);
+}
+.current-main{flex:1; min-width:240px}
+.place-line{font-size:1.3rem; font-weight:700; margin:.2rem 0; display:flex; align-items:center; gap:.8rem; flex-wrap:wrap}
+.fav-btn{background:rgba(255,255,255,.18); color:#fff; border:1.5px solid #fff; border-radius:999px; padding:.3rem .8rem; cursor:pointer; font-weight:700}
+.fav-btn.saved{background:var(--apricot); border-color:var(--apricot); color:var(--ink)}
+.big-temp{font-size:4.2rem; font-weight:800; margin:.3rem 0 0; line-height:1}
+.big-unit{font-size:2rem; vertical-align:top}
+.cur-desc{font-size:1.15rem; margin:.4rem 0 0}
+.current-details{display:grid; grid-template-columns:1fr 1fr; gap:1rem 2rem; margin:0; align-content:center}
+.current-details dt{font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; opacity:.85}
+.current-details dd{margin:.15rem 0 0; font-size:1.15rem; font-weight:700}
+.forecast-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:.7rem}
+.day-card{background:#fff; border-radius:12px; padding:.9rem .6rem; text-align:center; box-shadow:0 4px 14px rgba(38,49,59,.06)}
+.day-card .day-name{font-weight:700; color:var(--cerulean); margin:0 0 .3rem}
+.day-card .day-icon{font-size:1.8rem; margin:.2rem 0}
+.day-card .day-desc{font-size:.8rem; min-height:2em; margin:.2rem 0; opacity:.8}
+.day-card .day-temps{font-weight:700; margin:.3rem 0 0}
+.day-card .day-temps .lo{opacity:.55; font-weight:600}
+footer{max-width:960px; width:100%; margin:0 auto; padding:0 1.25rem 2rem; font-size:.88rem; opacity:.8}
+footer a{color:var(--cerulean)}
