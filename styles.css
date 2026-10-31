@@ -45,6 +45,25 @@ main{max-width:960px; width:100%; margin:0 auto; padding:1rem 1.25rem 2rem; flex
   padding:.7rem 1.3rem; font-size:1rem; font-weight:700; cursor:pointer;
 }
 .search-btn:hover{background:#f9633f}
+/* Autocomplete: the wrap anchors the dropdown (position:relative)
+   so the list overlays the panels below instead of pushing them. */
+.search-input-wrap{position:relative; flex:1; min-width:220px}
+.search-input-wrap input{width:100%}
+.suggestions{
+  position:absolute; top:calc(100% + .4rem); left:0; right:0; z-index:60;
+  margin:0; padding:.3rem; list-style:none; background:#fff;
+  border:2px solid var(--mist); border-radius:10px;
+  box-shadow:0 12px 32px rgba(38,49,59,.16);
+  max-height:60vh; overflow-y:auto;
+}
+.suggestion{
+  display:flex; flex-direction:column; justify-content:center; gap:.05rem;
+  min-height:52px; padding:.6rem .8rem; border-radius:8px; cursor:pointer;
+}
+.suggestion:hover,.suggestion.active{background:var(--mist)}
+.suggestion-name{font-weight:700; font-size:1rem; line-height:1.25}
+.suggestion-meta{font-size:.85rem; opacity:.7; line-height:1.25}
+.suggestion-empty{padding:.7rem .8rem; opacity:.65; font-style:italic; cursor:default}
 .status{min-height:1.4em; margin:.8rem 0 0; font-weight:600}
 .status.loading{color:var(--cerulean)}
 .status.error{color:#C0392B}
