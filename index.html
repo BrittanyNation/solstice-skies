@@ -40,6 +40,25 @@
     <p id="status" class="status" role="status" aria-live="polite"></p>
   </section>
 
+  <section class="browse-panel" aria-label="Browse by state">
+    <h2>Browse by state</h2>
+    <div class="browse-row">
+      <div class="browse-field">
+        <label for="stateSelect">State</label>
+        <select id="stateSelect">
+          <option value="">Choose a state…</option>
+        </select>
+      </div>
+      <div class="browse-field">
+        <label for="citySelect">City</label>
+        <select id="citySelect" disabled>
+          <option value="">Choose a city…</option>
+        </select>
+      </div>
+    </div>
+    <p id="stateInfo" class="state-info" hidden></p>
+  </section>
+
   <section id="favoritesPanel" class="favorites-panel" aria-label="Favorite cities" hidden>
     <h2>Your favorite skies</h2>
     <div id="favoritesList" class="favorites-list"></div>
