@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solstice Skies — Live Weather, Beautifully Told</title>
+<meta name="description" content="Solstice Skies is a live weather studio. Search any city on Earth and see real current conditions and a 7-day forecast, powered by the Open-Meteo public API.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Solstice Skies — Live Weather, Beautifully Told">
+<meta property="og:description" content="A fully functional live weather app: real API data, city search, favorites, and °F/°C toggle. Built with HTML, CSS, and async JavaScript.">
+<meta property="og:image" content="https://brittanynation.github.io/solstice-skies/og-image.png">
+<meta property="og:url" content="https://brittanynation.github.io/solstice-skies/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">☀️</span>
+    <div>
+      <h1>Solstice Skies</h1>
+      <p class="tagline">Live weather, beautifully told</p>
+    </div>
+  </div>
+  <div class="unit-toggle" role="group" aria-label="Temperature units">
+    <button id="unitF" class="unit-btn active" type="button">°F</button>
+    <button id="unitC" class="unit-btn" type="button">°C</button>
+  </div>
+</header>
+
+<main>
+  <section class="search-panel" aria-label="City search">
+    <form id="searchForm">
+      <label for="cityInput">Search any city in the world</label>
+      <div class="search-row">
+        <input id="cityInput" type="text" placeholder="Try “Denver”, “Paris”, “Tokyo”…" autocomplete="off">
+        <button type="submit" class="search-btn">Get weather</button>
+      </div>
+    </form>
+    <p id="status" class="status" role="status" aria-live="polite"></p>
+  </section>
+
+  <section id="favoritesPanel" class="favorites-panel" aria-label="Favorite cities" hidden>
+    <h2>Your favorite skies</h2>
+    <div id="favoritesList" class="favorites-list"></div>
+  </section>
+
+  <section id="weatherPanel" class="weather-panel" aria-label="Current conditions" hidden>
+    <div class="current-card">
+      <div class="current-main">
+        <p class="place-line"><span id="placeName"></span>
+          <button id="favBtn" class="fav-btn" type="button" aria-label="Save this city to favorites">☆ Save</button>
+        </p>
+        <p class="big-temp"><span id="curTemp"></span><span id="curUnit" class="big-unit"></span></p>
+        <p id="curDesc" class="cur-desc"></p>
+      </div>
+      <dl class="current-details">
+        <div><dt>Feels like</dt><dd id="feelsLike"></dd></div>
+        <div><dt>Humidity</dt><dd id="humidity"></dd></div>
+        <div><dt>Wind</dt><dd id="wind"></dd></div>
+        <div><dt>Local time</dt><dd id="localTime"></dd></div>
+      </dl>
+    </div>
+
+    <h2 class="forecast-title">Next 7 days</h2>
+    <div id="forecastGrid" class="forecast-grid"></div>
+  </section>
+</main>
+
+<footer>
+  <p>Solstice Skies is a fictional weather studio, designed and built as front-end portfolio work.
+     All weather data on this page is live, fetched in your browser from the
+     <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> public API.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
