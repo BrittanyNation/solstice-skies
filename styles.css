@@ -48,6 +48,22 @@ main{max-width:960px; width:100%; margin:0 auto; padding:1rem 1.25rem 2rem; flex
 .status{min-height:1.4em; margin:.8rem 0 0; font-weight:600}
 .status.loading{color:var(--cerulean)}
 .status.error{color:#C0392B}
+.browse-panel{background:#fff; border-radius:var(--radius); padding:1.25rem; box-shadow:0 6px 24px rgba(38,49,59,.08); margin-top:1.25rem}
+.browse-panel h2{color:var(--cerulean); font-size:1.25rem; margin:0 0 .8rem}
+.browse-row{display:flex; gap:.6rem; flex-wrap:wrap}
+.browse-field{flex:1; min-width:220px}
+.browse-field label{font-weight:600; display:block; margin-bottom:.4rem; font-size:.95rem}
+.browse-field select{
+  width:100%; padding:.7rem .9rem; font-size:1rem; color:var(--ink);
+  border:2px solid var(--mist); border-radius:10px; background:#fff; cursor:pointer;
+}
+.browse-field select:focus{outline:none; border-color:var(--cerulean)}
+.browse-field select:disabled{opacity:.55; cursor:not-allowed; background:var(--cloud)}
+.state-info{
+  margin:.9rem 0 0; padding:.6rem .9rem; background:var(--mist); border-radius:10px;
+  font-weight:600; color:var(--ink);
+}
+.state-info .state-info-label{color:var(--cerulean)}
 .favorites-panel{margin-top:1.5rem}
 .favorites-panel h2,.forecast-title{color:var(--cerulean); font-size:1.25rem}
 .favorites-list{display:flex; gap:.6rem; flex-wrap:wrap}
