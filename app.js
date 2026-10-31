@@ -6,7 +6,8 @@
      1. Geocoding API  — turns a city name into coordinates
      2. Forecast API   — returns live weather for coordinates
    Read top to bottom: helpers -> geocoding -> forecast fetch
-   -> rendering -> unit toggle -> favorites (localStorage).
+   -> rendering -> search autocomplete -> unit toggle
+   -> browse by state -> favorites (localStorage).
    ============================================================ */
 "use strict";
 
@@ -269,6 +270,7 @@ async function loadPlace(place) {
 /* Search form: geocode first, then load. Not found = error state. */
 $("searchForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+  closeSuggestions(); // a raw submit means the dropdown's job is done
   const query = $("cityInput").value.trim();
   if (!query) { setStatus("Type a city name first.", "error"); return; }
   setStatus("Searching for “" + query + "”…", "loading");
@@ -283,6 +285,157 @@ $("searchForm").addEventListener("submit", async (event) => {
     console.error(err);
     setStatus("Search failed. Check your connection and try again.", "error");
   }
+});
+
+/* ============================================================
+   SEARCH AUTOCOMPLETE: a dropdown that appears under the search
+   box WHILE YOU TYPE and lets you tap the exact city you meant.
+
+   Two ideas worth studying here:
+
+   1. DEBOUNCE. Fetching on every single keystroke would fire a
+      network request per letter — wasteful, and the answers can
+      arrive out of order. Instead each keystroke restarts a
+      250ms timer, and only when the typing pauses do we fetch.
+      So "C-l-a-r-k" costs ONE request, not five.
+
+   2. A SEQUENCE NUMBER for races. Even debounced, a slow answer
+      to an older query could land AFTER a newer one and show
+      stale suggestions. Every fetch takes a ticket (suggestSeq);
+      when its answer arrives, it only renders if its ticket is
+      still the latest one issued.
+
+   Tapping a row loads THAT result's own latitude/longitude via
+   loadPlace() — no second search, so the city she tapped is
+   guaranteed to be the city that loads, even with 30+ Springfields
+   and Clarksvilles in the world.
+   ============================================================ */
+const cityInput = $("cityInput");
+const searchWrap = $("searchWrap");
+const suggestList = $("suggestions");
+let suggestItems = [];   // places behind the rows currently shown
+let suggestActive = -1;  // keyboard-highlighted row (-1 = none)
+let suggestTimer = null; // the debounce timer
+let suggestSeq = 0;      // race-guard ticket, see note 2 above
+
+function closeSuggestions() {
+  suggestList.hidden = true;
+  suggestList.innerHTML = "";
+  suggestItems = [];
+  suggestActive = -1;
+  cityInput.setAttribute("aria-expanded", "false");
+  cityInput.removeAttribute("aria-activedescendant");
+}
+
+/* Move the keyboard highlight to row i and keep ARIA in sync. */
+function setSuggestActive(i) {
+  suggestActive = i;
+  [...suggestList.children].forEach((row, j) => {
+    row.classList.toggle("active", j === i);
+    row.setAttribute("aria-selected", j === i ? "true" : "false");
+  });
+  if (i >= 0) cityInput.setAttribute("aria-activedescendant", "suggestion-" + i);
+  else cityInput.removeAttribute("aria-activedescendant");
+}
+
+function renderSuggestions(places, query) {
+  suggestList.innerHTML = "";
+  suggestItems = places;
+  suggestActive = -1;
+  if (places.length === 0) {
+    /* No matches is not an error — just one quiet, untappable row.
+       The status line stays out of it while she is still typing. */
+    const li = document.createElement("li");
+    li.className = "suggestion-empty";
+    li.textContent = "No matches for “" + query + "” — keep typing or try another spelling";
+    suggestList.appendChild(li);
+  } else {
+    places.forEach((place, i) => {
+      const li = document.createElement("li");
+      li.className = "suggestion";
+      li.id = "suggestion-" + i;
+      li.setAttribute("role", "option");
+      li.setAttribute("aria-selected", "false");
+      const name = document.createElement("span");
+      name.className = "suggestion-name";
+      name.textContent = place.name;
+      const meta = document.createElement("span");
+      meta.className = "suggestion-meta";
+      meta.textContent = [place.admin1, place.country].filter(Boolean).join(" · ");
+      li.append(name, meta);
+      li.addEventListener("click", () => selectSuggestion(place));
+      li.addEventListener("mouseenter", () => setSuggestActive(i));
+      suggestList.appendChild(li);
+    });
+  }
+  suggestList.hidden = false;
+  cityInput.setAttribute("aria-expanded", "true");
+}
+
+async function fetchSuggestions(query) {
+  const ticket = ++suggestSeq; // take a race-guard ticket
+  const url = "https://geocoding-api.open-meteo.com/v1/search"
+    + "?name=" + encodeURIComponent(query)
+    + "&count=7&language=en&format=json";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Geocoding request failed (" + res.status + ")");
+    const data = await res.json();
+    if (ticket !== suggestSeq) return; // a newer keystroke superseded us
+    const places = (data.results || []).map((r) => ({
+      name: r.name, admin1: r.admin1 || "", country: r.country || "",
+      latitude: r.latitude, longitude: r.longitude,
+    }));
+    renderSuggestions(places, query);
+  } catch (err) {
+    /* A failed fetch mid-typing just hides the list — no error
+       noise in the status line while she is still typing. */
+    if (ticket === suggestSeq) closeSuggestions();
+  }
+}
+
+/* Picking a suggestion: fill the box, close the list, and load
+   exactly that place (its own coordinates, via the shared loader),
+   so the °F/°C toggle afterwards re-loads the same city. */
+function selectSuggestion(place) {
+  cityInput.value = place.name;
+  closeSuggestions();
+  loadPlace(place);
+}
+
+/* The typing listener: debounce first (note 1), then fetch. */
+cityInput.addEventListener("input", () => {
+  const query = cityInput.value.trim();
+  clearTimeout(suggestTimer);
+  if (query.length < 2) { closeSuggestions(); return; }
+  suggestTimer = setTimeout(() => fetchSuggestions(query), 250);
+});
+
+/* Keyboard: arrows move the highlight, Enter picks the highlighted
+   row INSTEAD of submitting the raw text, Escape closes the list. */
+cityInput.addEventListener("keydown", (event) => {
+  if (suggestList.hidden || suggestItems.length === 0) {
+    if (event.key === "Escape") closeSuggestions();
+    return;
+  }
+  if (event.key === "ArrowDown") {
+    event.preventDefault(); // keep the text cursor where it is
+    setSuggestActive(Math.min(suggestActive + 1, suggestItems.length - 1));
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    setSuggestActive(Math.max(suggestActive - 1, 0));
+  } else if (event.key === "Enter" && suggestActive >= 0) {
+    event.preventDefault(); // ours, not the form's submit
+    selectSuggestion(suggestItems[suggestActive]);
+  } else if (event.key === "Escape") {
+    closeSuggestions();
+  }
+});
+
+/* Tap/click anywhere outside the search wrap closes the list.
+   pointerdown (not click) so the list is gone before focus moves. */
+document.addEventListener("pointerdown", (event) => {
+  if (!searchWrap.contains(event.target)) closeSuggestions();
 });
 
 /* ============================================================
