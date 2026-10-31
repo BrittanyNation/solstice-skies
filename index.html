@@ -33,7 +33,11 @@
     <form id="searchForm">
       <label for="cityInput">Search any city in the world</label>
       <div class="search-row">
-        <input id="cityInput" type="text" placeholder="Try “Denver”, “Paris”, “Tokyo”…" autocomplete="off">
+        <div class="search-input-wrap" id="searchWrap">
+          <input id="cityInput" type="text" placeholder="Try “Denver”, “Paris”, “Tokyo”…" autocomplete="off"
+                 role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="suggestions">
+          <ul id="suggestions" class="suggestions" role="listbox" aria-label="City suggestions" hidden></ul>
+        </div>
         <button type="submit" class="search-btn">Get weather</button>
       </div>
     </form>
