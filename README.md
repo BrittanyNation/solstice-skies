@@ -7,6 +7,8 @@ A fully functional live weather web app for **Solstice Skies**, a fictional weat
 ## What it does
 
 - **City search worldwide** — the Open-Meteo Geocoding API turns a city name into coordinates, then the Forecast API returns live weather for that spot.
+- **Browse by state dropdowns** — pick any of the 50 US states and a second dropdown fills with that state's notable cities; choosing a city runs it through the same live geocoding + forecast flow, so dropdown weather is 100% live API data too (with a same-name guard, so Springfield, Illinois never loads Springfield, Missouri).
+- **State info** — selecting a state shows its capital and nickname, and the results header always names the state for US places ("City, State"), whatever route you took to get there.
 - **Current conditions** — temperature, feels-like, humidity, wind, local time, and a plain-language description translated from WMO weather codes.
 - **7-day forecast** — daily high/low and conditions.
 - **°F / °C toggle** — re-fetches from the API in the other unit so every value re-renders consistently.
