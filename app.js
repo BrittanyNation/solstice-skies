@@ -58,6 +58,64 @@ const DEFAULT_PLACE = {
   latitude: 36.5298, longitude: -87.3595,
 };
 
+/* ---------- Browse-by-state data ----------
+   All 50 US states with two stable facts (capital + nickname) and
+   a handful of notable cities each. This is plain reference data —
+   NO weather lives here. Picking a city still geocodes it and
+   fetches live weather exactly like the search box does. */
+const US_STATES = [
+  { name: "Alabama", capital: "Montgomery", nickname: "The Yellowhammer State", cities: ["Birmingham", "Montgomery", "Mobile", "Huntsville", "Tuscaloosa"] },
+  { name: "Alaska", capital: "Juneau", nickname: "The Last Frontier", cities: ["Anchorage", "Juneau", "Fairbanks", "Sitka", "Ketchikan"] },
+  { name: "Arizona", capital: "Phoenix", nickname: "The Grand Canyon State", cities: ["Phoenix", "Tucson", "Scottsdale", "Flagstaff", "Mesa"] },
+  { name: "Arkansas", capital: "Little Rock", nickname: "The Natural State", cities: ["Little Rock", "Fayetteville", "Fort Smith", "Hot Springs", "Bentonville"] },
+  { name: "California", capital: "Sacramento", nickname: "The Golden State", cities: ["Los Angeles", "San Francisco", "San Diego", "San Jose", "Sacramento", "Fresno"] },
+  { name: "Colorado", capital: "Denver", nickname: "The Centennial State", cities: ["Denver", "Colorado Springs", "Boulder", "Fort Collins", "Aspen"] },
+  { name: "Connecticut", capital: "Hartford", nickname: "The Constitution State", cities: ["Hartford", "New Haven", "Stamford", "Bridgeport", "Mystic"] },
+  { name: "Delaware", capital: "Dover", nickname: "The First State", cities: ["Wilmington", "Dover", "Newark", "Rehoboth Beach", "Lewes"] },
+  { name: "Florida", capital: "Tallahassee", nickname: "The Sunshine State", cities: ["Miami", "Orlando", "Tampa", "Jacksonville", "Key West"] },
+  { name: "Georgia", capital: "Atlanta", nickname: "The Peach State", cities: ["Atlanta", "Savannah", "Athens", "Augusta", "Macon"] },
+  { name: "Hawaii", capital: "Honolulu", nickname: "The Aloha State", cities: ["Honolulu", "Hilo", "Kailua-Kona", "Lahaina", "Lihue"] },
+  { name: "Idaho", capital: "Boise", nickname: "The Gem State", cities: ["Boise", "Coeur d'Alene", "Idaho Falls", "Sun Valley", "Twin Falls"] },
+  { name: "Illinois", capital: "Springfield", nickname: "The Prairie State", cities: ["Chicago", "Springfield", "Naperville", "Champaign", "Galena"] },
+  { name: "Indiana", capital: "Indianapolis", nickname: "The Hoosier State", cities: ["Indianapolis", "Fort Wayne", "Bloomington", "South Bend", "Evansville"] },
+  { name: "Iowa", capital: "Des Moines", nickname: "The Hawkeye State", cities: ["Des Moines", "Cedar Rapids", "Iowa City", "Davenport", "Ames"] },
+  { name: "Kansas", capital: "Topeka", nickname: "The Sunflower State", cities: ["Wichita", "Kansas City", "Topeka", "Lawrence", "Manhattan"] },
+  { name: "Kentucky", capital: "Frankfort", nickname: "The Bluegrass State", cities: ["Louisville", "Lexington", "Frankfort", "Bowling Green", "Covington"] },
+  { name: "Louisiana", capital: "Baton Rouge", nickname: "The Pelican State", cities: ["New Orleans", "Baton Rouge", "Shreveport", "Lafayette", "Lake Charles"] },
+  { name: "Maine", capital: "Augusta", nickname: "The Pine Tree State", cities: ["Portland", "Bangor", "Augusta", "Bar Harbor", "Lewiston"] },
+  { name: "Maryland", capital: "Annapolis", nickname: "The Old Line State", cities: ["Baltimore", "Annapolis", "Frederick", "Ocean City", "Bethesda"] },
+  { name: "Massachusetts", capital: "Boston", nickname: "The Bay State", cities: ["Boston", "Cambridge", "Worcester", "Salem", "Springfield", "Provincetown"] },
+  { name: "Michigan", capital: "Lansing", nickname: "The Great Lakes State", cities: ["Detroit", "Grand Rapids", "Ann Arbor", "Lansing", "Traverse City"] },
+  { name: "Minnesota", capital: "Saint Paul", nickname: "The North Star State", cities: ["Minneapolis", "Saint Paul", "Duluth", "Rochester", "St. Cloud"] },
+  { name: "Mississippi", capital: "Jackson", nickname: "The Magnolia State", cities: ["Jackson", "Biloxi", "Gulfport", "Hattiesburg", "Oxford"] },
+  { name: "Missouri", capital: "Jefferson City", nickname: "The Show-Me State", cities: ["Kansas City", "St. Louis", "Springfield", "Columbia", "Jefferson City"] },
+  { name: "Montana", capital: "Helena", nickname: "The Treasure State", cities: ["Billings", "Missoula", "Bozeman", "Helena", "Great Falls"] },
+  { name: "Nebraska", capital: "Lincoln", nickname: "The Cornhusker State", cities: ["Omaha", "Lincoln", "Grand Island", "Kearney", "Scottsbluff"] },
+  { name: "Nevada", capital: "Carson City", nickname: "The Silver State", cities: ["Las Vegas", "Reno", "Henderson", "Carson City", "Elko"] },
+  { name: "New Hampshire", capital: "Concord", nickname: "The Granite State", cities: ["Manchester", "Concord", "Portsmouth", "Nashua", "Hanover"] },
+  { name: "New Jersey", capital: "Trenton", nickname: "The Garden State", cities: ["Newark", "Jersey City", "Atlantic City", "Princeton", "Trenton"] },
+  { name: "New Mexico", capital: "Santa Fe", nickname: "The Land of Enchantment", cities: ["Albuquerque", "Santa Fe", "Taos", "Las Cruces", "Roswell"] },
+  { name: "New York", capital: "Albany", nickname: "The Empire State", cities: ["New York", "Albany", "Buffalo", "Rochester", "Syracuse", "Ithaca"] },
+  { name: "North Carolina", capital: "Raleigh", nickname: "The Tar Heel State", cities: ["Charlotte", "Raleigh", "Asheville", "Durham", "Wilmington"] },
+  { name: "North Dakota", capital: "Bismarck", nickname: "The Peace Garden State", cities: ["Fargo", "Bismarck", "Grand Forks", "Minot", "Medora"] },
+  { name: "Ohio", capital: "Columbus", nickname: "The Buckeye State", cities: ["Columbus", "Cincinnati", "Cleveland", "Dayton", "Toledo"] },
+  { name: "Oklahoma", capital: "Oklahoma City", nickname: "The Sooner State", cities: ["Oklahoma City", "Tulsa", "Norman", "Broken Arrow", "Stillwater"] },
+  { name: "Oregon", capital: "Salem", nickname: "The Beaver State", cities: ["Portland", "Eugene", "Salem", "Bend", "Ashland"] },
+  { name: "Pennsylvania", capital: "Harrisburg", nickname: "The Keystone State", cities: ["Philadelphia", "Pittsburgh", "Harrisburg", "Erie", "Lancaster"] },
+  { name: "Rhode Island", capital: "Providence", nickname: "The Ocean State", cities: ["Providence", "Newport", "Warwick", "Cranston", "Pawtucket"] },
+  { name: "South Carolina", capital: "Columbia", nickname: "The Palmetto State", cities: ["Charleston", "Columbia", "Myrtle Beach", "Greenville", "Hilton Head Island"] },
+  { name: "South Dakota", capital: "Pierre", nickname: "The Mount Rushmore State", cities: ["Sioux Falls", "Rapid City", "Pierre", "Aberdeen", "Deadwood"] },
+  { name: "Tennessee", capital: "Nashville", nickname: "The Volunteer State", cities: ["Nashville", "Memphis", "Knoxville", "Chattanooga", "Clarksville"] },
+  { name: "Texas", capital: "Austin", nickname: "The Lone Star State", cities: ["Houston", "Dallas", "Austin", "San Antonio", "Fort Worth", "El Paso"] },
+  { name: "Utah", capital: "Salt Lake City", nickname: "The Beehive State", cities: ["Salt Lake City", "Park City", "Moab", "Provo", "St. George"] },
+  { name: "Vermont", capital: "Montpelier", nickname: "The Green Mountain State", cities: ["Burlington", "Montpelier", "Stowe", "Rutland", "Brattleboro"] },
+  { name: "Virginia", capital: "Richmond", nickname: "The Old Dominion", cities: ["Richmond", "Virginia Beach", "Norfolk", "Charlottesville", "Williamsburg"] },
+  { name: "Washington", capital: "Olympia", nickname: "The Evergreen State", cities: ["Seattle", "Spokane", "Tacoma", "Olympia", "Bellingham"] },
+  { name: "West Virginia", capital: "Charleston", nickname: "The Mountain State", cities: ["Charleston", "Morgantown", "Huntington", "Harpers Ferry", "Wheeling"] },
+  { name: "Wisconsin", capital: "Madison", nickname: "The Badger State", cities: ["Milwaukee", "Madison", "Green Bay", "La Crosse", "Appleton"] },
+  { name: "Wyoming", capital: "Cheyenne", nickname: "The Equality State", cities: ["Cheyenne", "Jackson", "Casper", "Cody", "Laramie"] },
+];
+
 /* ---------- Small DOM helpers ---------- */
 const $ = (id) => document.getElementById(id);
 const statusEl = $("status");
@@ -83,6 +141,29 @@ async function geocodeCity(query) {
   const data = await res.json();
   if (!data.results || data.results.length === 0) return null; // city not found
   const r = data.results[0];
+  return {
+    name: r.name, admin1: r.admin1 || "", country: r.country || "",
+    latitude: r.latitude, longitude: r.longitude,
+  };
+}
+
+/* Dropdown picks need the RIGHT same-named city — there are more
+   than 30 Springfields in the US! First try the everyday geocoder
+   above with a literal "City, State" search. If its top hit's
+   admin1 (the API's name for the state) is a different state, ask
+   for up to 10 matches and pick the one whose admin1 is ours. */
+async function geocodeCityInState(city, stateName) {
+  const first = await geocodeCity(city + ", " + stateName);
+  if (first && first.admin1 === stateName) return first;
+  const url = "https://geocoding-api.open-meteo.com/v1/search"
+    + "?name=" + encodeURIComponent(city)
+    + "&count=10&language=en&format=json";
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Geocoding request failed (" + res.status + ")");
+  const data = await res.json();
+  if (!data.results || data.results.length === 0) return null; // city not found
+  const match = data.results.find((r) => r.admin1 === stateName);
+  const r = match || data.results[0];
   return {
     name: r.name, admin1: r.admin1 || "", country: r.country || "",
     latitude: r.latitude, longitude: r.longitude,
@@ -218,6 +299,73 @@ function setUnit(unit) {
 }
 $("unitF").addEventListener("click", () => setUnit("fahrenheit"));
 $("unitC").addEventListener("click", () => setUnit("celsius"));
+
+/* ============================================================
+   BROWSE BY STATE: two linked <select> dropdowns.
+   Picking a state fills the city dropdown from US_STATES (plain
+   reference data, no fetch needed) and shows that state's info
+   line — capital + nickname. Picking a city then runs the SAME
+   geocode -> forecast flow as the search box (loadPlace), so
+   dropdown weather is every bit as live, and the °F/°C toggle
+   re-loads it in the other unit just like a searched city.
+   Note the results header already prints "City, State" for US
+   places: renderWeather() appends place.admin1 (see STEP 3).
+   ============================================================ */
+const stateSelect = $("stateSelect");
+const citySelect = $("citySelect");
+const stateInfoEl = $("stateInfo");
+const stateByName = (name) => US_STATES.find((s) => s.name === name);
+
+/* Fill the state dropdown once, on page load. */
+US_STATES.forEach((s) => {
+  const opt = document.createElement("option");
+  opt.value = s.name;
+  opt.textContent = s.name;
+  stateSelect.appendChild(opt);
+});
+
+stateSelect.addEventListener("change", () => {
+  const entry = stateByName(stateSelect.value);
+  /* Reset the city dropdown to its placeholder before refilling. */
+  citySelect.innerHTML = '<option value="">Choose a city…</option>';
+  if (!entry) {
+    /* Back on "Choose a state…" — disable cities, hide the info. */
+    citySelect.disabled = true;
+    stateInfoEl.hidden = true;
+    return;
+  }
+  entry.cities.forEach((city) => {
+    const opt = document.createElement("option");
+    opt.value = city;
+    opt.textContent = city;
+    citySelect.appendChild(opt);
+  });
+  citySelect.disabled = false;
+  /* State info line: capital + nickname, from the data object. */
+  stateInfoEl.innerHTML =
+    '<span class="state-info-label">' + entry.name + "</span>" +
+    " · Capital: " + entry.capital +
+    " · Known as: " + entry.nickname;
+  stateInfoEl.hidden = false;
+});
+
+citySelect.addEventListener("change", async () => {
+  const city = citySelect.value;
+  const entry = stateByName(stateSelect.value);
+  if (!city || !entry) return; // placeholder picked, or no state yet
+  setStatus("Searching for “" + city + ", " + entry.name + "”…", "loading");
+  try {
+    const place = await geocodeCityInState(city, entry.name);
+    if (!place) {
+      setStatus("No place found for “" + city + ", " + entry.name + "”.", "error");
+      return;
+    }
+    await loadPlace(place); // the one shared weather loader
+  } catch (err) {
+    console.error(err);
+    setStatus("Search failed. Check your connection and try again.", "error");
+  }
+});
 
 /* ============================================================
    FAVORITES: saved in localStorage so they survive reloads.
